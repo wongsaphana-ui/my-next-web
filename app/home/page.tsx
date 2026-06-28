@@ -1,9 +1,11 @@
-import React from 'react'
+// import React from 'react'
 
-function addstock() {
-  return (
-    <div>addstock</div>
-  )
-}
+// function addstock() {
+//   return (
+//     <div>addstock</div>
+//   )
+// }
 
-export default addstock
+// export default addstock
+
+
