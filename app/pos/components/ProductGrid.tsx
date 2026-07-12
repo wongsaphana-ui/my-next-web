@@ -1,35 +1,16 @@
-import ProductCard from "./ProductCard";
+"use client";
 
-const products = [
-  {
-    id: 1,
-    name: "โค้ก",
-    price: 20,
-    stock: 50,
-    image: "https://placehold.co/300x300?text=Coke",
-  },
-  {
-    id: 2,
-    name: "โอริโอ้",
-    price: 25,
-    stock: 35,
-    image: "https://placehold.co/300x300?text=Oreo",
-  },
-  {
-    id: 3,
-    name: "นม",
-    price: 30,
-    stock: 18,
-    image: "https://placehold.co/300x300?text=Milk",
-  },
-];
+import { useEffect, useState } from "react";
+import ProductCard from "./ProductCard";
+import { supabase } from "@/app/lib/supabase";
 
 type Product = {
   id: number;
+  barcode: string;
   name: string;
   price: number;
   stock: number;
-  image: string;
+  image: string | null;
 };
 
 type Props = {
@@ -37,17 +18,38 @@ type Props = {
 };
 
 export default function ProductGrid({ onAdd }: Props) {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  async function loadProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("id");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setProducts(data || []);
+  }
+
   return (
     <div className="grid grid-cols-3 gap-4">
       {products.map((product) => (
         <ProductCard
           key={product.id}
           id={product.id}
+          barcode={product.barcode}
           name={product.name}
           price={product.price}
           stock={product.stock}
           image={product.image}
-          onAdd={() => onAdd(product)}
+          onAdd={onAdd}
         />
       ))}
     </div>
